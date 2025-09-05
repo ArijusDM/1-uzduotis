@@ -1,1 +1,1 @@
-# 1-u-duotis
+# 1-uzduotis
