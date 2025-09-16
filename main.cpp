@@ -73,27 +73,24 @@ int main(){
     }
 
     Studentas Stud_iv(){
-        int n, laik_nd, sum=0;
+        int laik_nd, sum=0;
 
         Studentas Pirmas;
         cout<<"Ivesk studento duomenis"<<endl;
         cout<<"Vardas: "; cin>>Pirmas.var;
         cout<<"Pavarde: "; cin>>Pirmas.pav;
-        cout<<"Kiek pazymiu gavo studentas uz namu darbus: "<<Pirmas.var<<" "<<Pirmas.pav<<": ";cin>>n;
-
-        for(int i=0; i<n; i++){
-                cout<<i+1<<": ";
-                while(!(cin>>laik_nd)|| laik_nd < 1 || laik_nd >10){
-                    cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
-                    cin.clear();
-                    cin.ignore(10000, '\n');
-                    cout<<i+1<<": ";
-                }
-
+        cout<<"Iveskite studento ("<<Pirmas.var<<" "<<Pirmas.pav<<") namu darbu pazymius (iveskite 0, kad baigti): "<<endl;
+        while(true){
+            cout<<Pirmas.nd.size()+1<<": ";
+            cin>>laik_nd;
+            if(laik_nd == 0) break;
+            if(laik_nd < 1 || laik_nd > 10){
+               cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10 arba 0 pabaigai"<<endl;
+               continue;
+            }
             Pirmas.nd.push_back(laik_nd);
             sum+=laik_nd;
         }
-
         cout<<"Studento egzamino pazimys: ";
         while(!(cin>>Pirmas.egz) || Pirmas.egz < 1 || Pirmas.egz > 10){
             cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
@@ -102,8 +99,14 @@ int main(){
             cout<<"Studento egzamino pazimys: ";
         }
 
-        Pirmas.galVid=double(sum)/double(n)*0.4+0.6*Pirmas.egz;
-        Pirmas.galMed=median(Pirmas.nd)*0.4+0.6*Pirmas.egz;
 
-        return Pirmas;
+    if(!Pirmas.nd.empty()){
+        double vid = double(sum)/double(Pirmas.nd.size());
+        Pirmas.galVid=vid*0.4+0.6*Pirmas.egz;
+        Pirmas.galMed=median(Pirmas.nd)*0.4+0.6*Pirmas.egz;
+    } else{
+        Pirmas.galVid=0.6*Pirmas.egz;
+        Pirmas.galMed=0.6*Pirmas.egz;
     }
+        return Pirmas;
+}
