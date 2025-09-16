@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <sort>
+#include <algorithm>
 
 using std::cout;
 using std::cin;
@@ -29,7 +29,7 @@ double median(vector<int> &v){
     if(v.empty()) return 0.0;
     vector<int> laik=v;
     sort(laik.begin(), laik.end());
-    int n = laik.size()
+    int n = laik.size();
     if(n % 2 ==1)
         return laik[n/2];
     else
@@ -48,10 +48,27 @@ int main(){
     for(auto z=0; z<m; z++){
         Grupe.push_back(Stud_iv());
     }
-    cout<<setw(10)<<left<<"Vardas"<<setw(15)<<left<<"Pavarde"<<setw(16)<<left<<"Galutinis (Vid.)"<<endl;
-    cout<<"-----------------------------------------"<<endl;
+
+    cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
+    cout<<"1 - Vidurkis"<<endl;
+    cout<<"2 - Mediana"<<endl;
+    cout<<"3 - Abu"<<endl;
+    int pasirinkimas;
+    cin>>pasirinkimas;
+
+    cout<<setw(10)<<left<<"Vardas"<<setw(15)<<left<<"Pavarde";
+
+    if(pasirinkimas == 1) cout<<setw(16)<<left<<"Galutinis (Vid.)"<<endl;
+    else if(pasirinkimas == 2) cout<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
+    else cout<<setw(18)<<left<<"Galutinis (Vid.)"<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
+
+    cout<<"-----------------------------------------------------------"<<endl;
     for(auto Past:Grupe){
-        cout<<setw(10)<<left<<Past.var<<setw(15)<<left<<Past.pav<<setw(16)<<left<<fixed<<setprecision(2)<<Past.gal<<endl;
+        cout<<setw(10)<<left<<Past.var<<setw(15)<<left<<Past.pav;
+
+        if(pasirinkimas == 1) cout<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galVid<<endl;
+        else if(pasirinkimas == 2) cout<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
+        else cout<<setw(18)<<left<<fixed<<setprecision(2)<<Past.galVid<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
         }
     }
 
@@ -67,7 +84,7 @@ int main(){
         for(int i=0; i<n; i++){
                 cout<<i+1<<": ";
                 while(!(cin>>laik_nd)|| laik_nd < 1 || laik_nd >10){
-                    cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10.\n";
+                    cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
                     cin.clear();
                     cin.ignore(10000, '\n');
                     cout<<i+1<<": ";
@@ -79,12 +96,14 @@ int main(){
 
         cout<<"Studento egzamino pazimys: ";
         while(!(cin>>Pirmas.egz) || Pirmas.egz < 1 || Pirmas.egz > 10){
-            cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10.\n";
+            cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
             cin.clear();
             cin.ignore(10000, '\n');
             cout<<"Studento egzamino pazimys: ";
         }
-        Pirmas.gal=double(sum)/double(n)*0.4+0.6*Pirmas.egz;
+
+        Pirmas.galVid=double(sum)/double(n)*0.4+0.6*Pirmas.egz;
+        Pirmas.galMed=median(Pirmas.nd)*0.4+0.6*Pirmas.egz;
 
         return Pirmas;
     }
