@@ -107,7 +107,12 @@ int main(){
     }
 
     if(ivBudas == 3){
-        Grupe = SkaitytiFaila("studentai10000.txt");
+        Grupe = SkaitytiFaila("studentai101000.txt");
+
+        if(Grupe.empty()){
+            cout<<"Programa uzdaroma, nes nepavyko nuskaityti failo"<<endl;
+            return 0;
+        }
     }
     else{
         cout<<"Kiek studentu grupeje? ";
