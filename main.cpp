@@ -95,10 +95,15 @@ int main(){
 
     int ivBudas;
 
-    while(!(cin>>ivBudas) || ivBudas < 1 || ivBudas > 3){
-        cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
-        cin.clear();
-        cin.ignore(10000, '\n');
+    while(true){
+        if(cin>>ivBudas && ivBudas >= 1 && ivBudas <= 3){
+            break;
+        }
+        else{
+            cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
     }
 
     if(ivBudas == 3){
