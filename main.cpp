@@ -94,16 +94,15 @@ int main(){
     cout<<"3 - Nuskaityti is failo"<<endl;
 
     int ivBudas;
+    string ivBudasStr;
 
     while(true){
-        if(cin>>ivBudas && ivBudas >= 1 && ivBudas <= 3){
-            break;
+        cin>>ivBudasStr;
+        if(!ivBudasStr.empty() && all_of(ivBudasStr.begin(), ivBudasStr.end(), ::isdigit)){
+            ivBudas = stoi(ivBudasStr);
+            if(ivBudas >= 1 && ivBudas <= 3) break;
         }
-        else{
-            cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
-            cin.clear();
-            cin.ignore(10000, '\n');
-        }
+        cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
     }
 
     if(ivBudas == 3){
@@ -115,8 +114,22 @@ int main(){
         }
     }
     else{
-        cout<<"Kiek studentu grupeje? ";
         int m;
+        string mStr;
+
+        while(true){
+            cout<<"Kiek studentu grupeje? "<<endl;
+            cin>>mStr;
+
+            if(!mStr.empty() && all_of(mStr.begin(), mStr.end(), ::isdigit)){
+                m = stoi(mStr);
+                if(m >= 1){
+                    break;
+                }
+            }
+            cout<<"Neteisinga ivestis, turi buti skaicius lygus arba didesnis uz 1"<<endl;
+        }
+
         cin>>m;
         bool atsitiktinis = (ivBudas == 2);
         for(auto z=0; z<m; z++){
