@@ -130,10 +130,9 @@ int main(){
             cout<<"Neteisinga ivestis, turi buti skaicius lygus arba didesnis uz 1"<<endl;
         }
 
-        cin>>m;
         bool atsitiktinis = (ivBudas == 2);
         for(auto z=0; z<m; z++){
-        Grupe.push_back(Stud_iv(atsitiktinis));
+            Grupe.push_back(Stud_iv(atsitiktinis));
         }
     }
 
@@ -179,24 +178,35 @@ int main(){
             cout<<"Sugeneruoti "<<nd_kiekis<<" namu darbu pazymiai ir egzaminas"<<endl;
         }
         else{
+            string ndStr;
+
             cout<<"Iveskite studento ("<<Pirmas.var<<" "<<Pirmas.pav<<") namu darbu pazymius (iveskite 0, kad baigti): "<<endl;
             while(true){
                 cout<<Pirmas.nd.size()+1<<": ";
-                cin>>laik_nd;
-                if(laik_nd == 0) break;
-                if(laik_nd < 1 || laik_nd > 10){
-                    cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10 arba 0 pabaigai"<<endl;
-                    continue;
+                cin>>ndStr;
+
+                if(ndStr == "0") break;
+
+                if(!ndStr.empty() && all_of(ndStr.begin(), ndStr.end(), ::isdigit)){
+                    laik_nd = stoi(ndStr);
+                    if(laik_nd >= 1 && laik_nd <= 10){
+                        Pirmas.nd.push_back(laik_nd);
+                        sum += laik_nd;
+                        continue;
+                    }
                 }
-                Pirmas.nd.push_back(laik_nd);
-                sum+=laik_nd;
+                cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10 arba 0 pabaigai"<<endl;
             }
-            cout<<"Studento egzamino pazimys: ";
-            while(!(cin>>Pirmas.egz) || Pirmas.egz < 1 || Pirmas.egz > 10){
-            cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cout<<"Studento egzamino pazimys: ";
+            string egzStr;
+
+            while(true){
+                cout<<"Studento egzamino pazimys: ";
+                cin>>egzStr;
+                if(!egzStr.empty() && all_of(egzStr.begin(), egzStr.end(), ::isdigit)){
+                    Pirmas.egz = stoi(egzStr);
+                    if(Pirmas.egz >= 1 && Pirmas.egz <= 10) break;
+                }
+                cout<<"Neteisinga ivestis, iveskite skaiciu nuo 1 iki 10"<<endl;
             }
         }
 
