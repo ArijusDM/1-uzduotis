@@ -154,13 +154,17 @@ int main(){
         cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
     }
 
+    sort(Grupe.begin(), Grupe.end(), [](const Studentas &a, const Studentas &b){
+         return a.var < b.var;
+    });
+
     cout<<setw(15)<<left<<"Vardas"<<setw(20)<<left<<"Pavarde";
 
     if(pasirinkimas == 1) cout<<setw(16)<<left<<"Galutinis (Vid.)"<<endl;
     else if(pasirinkimas == 2) cout<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
     else cout<<setw(18)<<left<<"Galutinis (Vid.)"<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
 
-    cout<<"-----------------------------------------------------------"<<endl;
+    cout<<"---------------------------------------------------------------------"<<endl;
     for(auto Past:Grupe){
         cout<<setw(15)<<left<<Past.var<<setw(20)<<left<<Past.pav;
 
