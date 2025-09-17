@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 using std::cout;
 using std::cin;
@@ -17,6 +18,7 @@ using std::right;
 using std::fixed;
 using std::setprecision;
 using std::sort;
+using std::ifstream;
 
 struct Studentas{
     string var;
@@ -40,25 +42,71 @@ double median(vector<int> &v){
 
 Studentas Stud_iv(bool atsitiktinis);
 
+vector<Studentas> SkaitytiFaila(const string &failoVardas){
+    vector<Studentas> grupe;
+    ifstream in(failoVardas);
+    if(!in){
+        cout<<"Nepavyko atidaryti failo"<<endl;
+        return grupe;
+        }
+    string vard, pavarde;
+    string header;
+    std::getline(in, header);
+
+    while(in >> vard >> pavarde){
+        Studentas s;
+        s.var = vard;
+        s.pav = pavarde;
+        s.nd.clear();
+
+        int paz;
+        vector<int> laik;
+        while(in.peek() != '\n' && in >> paz){
+            laik.push_back(paz);
+        }
+        if(!laik.empty()){
+            s.egz = laik.back();
+            laik.pop_back();
+            s.nd = laik;
+
+            double vid = 0;
+            for(int x: s.nd) vid += x;
+            if(!s.nd.empty()) vid /= s.nd.size();
+            s.galVid = vid*0.4 + 0.6*s.egz;
+            s.galMed = median(s.nd)*0.4 + 0.6*s.egz;
+        }
+        grupe.push_back(s);
+    }
+    return grupe;
+}
+
+
 int main(){
 
     srand(time(0));
 
     vector <Studentas> Grupe;
-    cout<<"Kiek studentu grupeje? ";
-    int m;
-    cin>>m;
+
 
     cout<<"Pasirinkite duomenu ivedimo buda: "<<endl;
     cout<<"1 - Ivesti ranka"<<endl;
     cout<<"2 - Generuoti atsitiktinai"<<endl;
+    cout<<"3 - Nuskaityti is failo"<<endl;
+
     int ivBudas;
     cin>>ivBudas;
 
-    bool atsitiktinis = (ivBudas == 2);
-
-    for(auto z=0; z<m; z++){
+    if(ivBudas == 3){
+        Grupe = SkaitytiFaila("kursiokai.txt");
+    }
+    else{
+        cout<<"Kiek studentu grupeje? ";
+        int m;
+        cin>>m;
+        bool atsitiktinis = (ivBudas == 2);
+        for(auto z=0; z<m; z++){
         Grupe.push_back(Stud_iv(atsitiktinis));
+        }
     }
 
     cout<<"Pasirinkite galutinio balo skaiciavimo buda: "<<endl;
