@@ -19,6 +19,7 @@ using std::fixed;
 using std::setprecision;
 using std::sort;
 using std::ifstream;
+using std::ofstream;
 
 struct Studentas{
     string var;
@@ -27,7 +28,28 @@ struct Studentas{
     int egz;
     double galVid;
     double galMed;
-    };
+};
+
+bool naturalCompare(const string& a, const string& b){
+    size_t i=0, j=0;
+    while(i < a.size() && j < b.size()){
+        if(std::isdigit(a[i]) && std::isdigit(b[j])){
+            size_t i2 = i;
+            while(i2 < a.size() && std::isdigit(a[i2])) i2++;
+            int numA = std::stoi(a.substr(i, i2 - i));
+            size_t j2 = j;
+            while(j2 < b.size() && std::isdigit(b[j2])) j2++;
+            int numB = std::stoi(b.substr(j, j2 - j));
+            if(numA != numB) return numA < numB;
+            i = i2;
+            j = j2;
+        } else{
+            if(a[i] != b[j]) return a[i] < b[j];
+            i++; j++;
+        }
+    }
+    return a.size() < b.size();
+}
 
 double median(vector<int> &v){
     if(v.empty()) return 0.0;
@@ -106,7 +128,7 @@ int main(){
     }
 
     if(ivBudas == 3){
-        Grupe = SkaitytiFaila("studentai101000.txt");
+        Grupe = SkaitytiFaila("studentai10000.txt");
 
         if(Grupe.empty()){
             cout<<"Programa uzdaroma, nes nepavyko nuskaityti failo"<<endl;
@@ -154,24 +176,49 @@ int main(){
         cout<<"Neteisinga ivestis, iveskite skaiciu 1, 2 arba 3"<<endl;
     }
 
-    sort(Grupe.begin(), Grupe.end(), [](const Studentas &a, const Studentas &b){
-         return a.var < b.var;
-    });
-
-    cout<<setw(15)<<left<<"Vardas"<<setw(20)<<left<<"Pavarde";
-
-    if(pasirinkimas == 1) cout<<setw(16)<<left<<"Galutinis (Vid.)"<<endl;
-    else if(pasirinkimas == 2) cout<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
-    else cout<<setw(18)<<left<<"Galutinis (Vid.)"<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
-
-    cout<<"---------------------------------------------------------------------"<<endl;
-    for(auto Past:Grupe){
-        cout<<setw(15)<<left<<Past.var<<setw(20)<<left<<Past.pav;
-
-        if(pasirinkimas == 1) cout<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galVid<<endl;
-        else if(pasirinkimas == 2) cout<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
-        else cout<<setw(18)<<left<<fixed<<setprecision(2)<<Past.galVid<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
+    int rusiavimas;
+    string rusiavimasStr;
+    while(true){
+        cout<<"Pasirinkite rusiavimo buda: "<<endl;
+        cout<<"1 - pagal varda"<<endl;
+        cout<<"2 - pagal pavarde"<<endl;
+        cin>>rusiavimasStr;
+        if(!rusiavimasStr.empty() && all_of(rusiavimasStr.begin(), rusiavimasStr.end(), ::isdigit)){
+            rusiavimas = stoi(rusiavimasStr);
+            if(rusiavimas == 1 || rusiavimas == 2) break;
         }
+        cout<<"Neteisinga ivestis, iveskite skaiciu 1 arba 2"<<endl;
+    }
+
+    if(rusiavimas == 1){
+        sort(Grupe.begin(), Grupe.end(), [](const Studentas &a, const Studentas &b){
+            return naturalCompare(a.var, b.var);
+        });
+    } else{
+        sort(Grupe.begin(), Grupe.end(), [](const Studentas &a, const Studentas &b){
+            return naturalCompare(a.pav, b.pav);
+        });
+    }
+
+    ofstream out("rezultatai.txt");
+
+    out<<setw(15)<<left<<"Vardas"<<setw(20)<<left<<"Pavarde";
+
+    if(pasirinkimas == 1) out<<setw(16)<<left<<"Galutinis (Vid.)"<<endl;
+    else if(pasirinkimas == 2) out<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
+    else out<<setw(18)<<left<<"Galutinis (Vid.)"<<setw(16)<<left<<"Galutinis (Med.)"<<endl;
+
+    out<<"---------------------------------------------------------------------"<<endl;
+    for(auto Past:Grupe){
+        out<<setw(15)<<left<<Past.var<<setw(20)<<left<<Past.pav;
+
+        if(pasirinkimas == 1) out<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galVid<<endl;
+        else if(pasirinkimas == 2) out<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
+        else out<<setw(18)<<left<<fixed<<setprecision(2)<<Past.galVid<<setw(16)<<left<<fixed<<setprecision(2)<<Past.galMed<<endl;
+    }
+
+    out<<"---------------------------------------------------------------------"<<endl;
+    cout<<"Rezultatai issaugoti faile rezultatai.txt"<<endl;
     }
 
     Studentas Stud_iv(bool atsitiktinis){
@@ -194,15 +241,24 @@ int main(){
         }
         else{
             string ndStr;
+            cin.ignore();
 
             cout<<"Iveskite studento ("<<Pirmas.var<<" "<<Pirmas.pav<<") namu darbu pazymius (iveskite 0, kad baigti): "<<endl;
+
+            int enter = 0;
+
             while(true){
                 cout<<Pirmas.nd.size()+1<<": ";
-                cin>>ndStr;
+                std::getline(cin, ndStr);
 
-                if(ndStr == "0") break;
+                if(ndStr.empty()){
+                    enter++;
+                    if(enter == 2) break;
+                    continue;
+                }
+                enter = 0;
 
-                if(!ndStr.empty() && all_of(ndStr.begin(), ndStr.end(), ::isdigit)){
+                if(all_of(ndStr.begin(), ndStr.end(), ::isdigit)){
                     laik_nd = stoi(ndStr);
                     if(laik_nd >= 1 && laik_nd <= 10){
                         Pirmas.nd.push_back(laik_nd);
